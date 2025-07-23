@@ -11,3 +11,4 @@ google-generativeai
 pypdf
 langchain-google-genai
 scikit-learn
+certifi==2025.7.14

@@ -5,8 +5,9 @@ from app.utils.password_utils import get_password_hash
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from app.utils.embedder import get_embedding
+import certifi
 
-client = MongoClient(MONGO_URL)
+client = MongoClient(MONGO_URL, tls=True, tlsCAFile=certifi.where())
 db = client["multilang-rag"]
 users_col = db["users"]
 chats_col = db["chats"]
