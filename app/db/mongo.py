@@ -12,6 +12,8 @@ users_col = db["users"]
 chats_col = db["chats"]
 docs_col = db["documents"]
 
+print("Connected to MongoDB at", MONGO_URL)
+
 def get_user_by_username(username):
     data = users_col.find_one({"username": username})
     return User(**data) if data else None
