@@ -1,10 +1,6 @@
-from sentence_transformers import SentenceTransformer
+from app.core.config import GEMINI_API_KEY
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
-# Load a multilingual model
-model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-
-def get_embedding(text: str) -> list:
-    """
-    Converts input text to a 384-dimensional vector using a multilingual model.
-    """
-    return model.encode(text).tolist()
+def get_embedding(texts: str):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001",google_api_key=GEMINI_API_KEY)    
+    return embeddings.embed_query(texts)

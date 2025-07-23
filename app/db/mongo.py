@@ -5,7 +5,6 @@ from app.utils.password_utils import get_password_hash
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from app.utils.embedder import get_embedding
-import uuid
 
 client = MongoClient(MONGO_URL)
 db = client["multilang-rag"]
@@ -49,4 +48,4 @@ def get_user_documents(username, query, top_k=3):
     doc_embeddings = np.array([doc["embedding"] for doc in all_docs])
     similarities = cosine_similarity(query_embedding, doc_embeddings)[0]
     top_indices = similarities.argsort()[::-1][:top_k]
-    return "\n---\n".join([all_docs[i]["content"] for i in top_indices])
+    return "\n\n".join([all_docs[i]["content"] for i in top_indices])

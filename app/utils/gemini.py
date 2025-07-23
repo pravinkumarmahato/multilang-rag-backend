@@ -1,34 +1,27 @@
-import requests
 from app.core.config import GEMINI_API_KEY
+from langchain import PromptTemplate, LLMChain
+from langchain_google_genai import ChatGoogleGenerativeAI
 
-def call_gemini(query: str, context: str, lang: str):
-    prompt = f"""
-You are a helpful assistant. Answer the following question in the user's language: {lang} 
-If the context does not contain relevant information, reply with "Sorry, I don't have enough information."
+model = ChatGoogleGenerativeAI(model="gemini-2.0-flash",google_api_key=GEMINI_API_KEY,
+                             temperature=0.2,convert_system_message_to_human=True)
+
+def call_gemini(question: str, context: str):
+    template = f"""You are a helpful assistant. Answer the following question in the user's language. 
+If you don't know the answer, just reply "Sorry, I don't have enough information.", don't try to make up an answer.
+Keep the answer as concise as possible. Always say "thanks for asking!" at the end of the answer.
 
 Context:
 {context}
 
-Question:
-{query}
+Question: {question}
 
-Answer:
-"""
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
-    headers = {"Content-Type": "application/json"}
-    params = {"key": GEMINI_API_KEY}
-    payload = {
-        "contents": [
-            {
-                "parts": [{"text": prompt}]
-            }
-        ]
-    }
+Answer:"""
 
-    res = requests.post(url, headers=headers, params=params, json=payload)
-    print(res.text)  # Debugging line to see the response
+    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"], template=template)
+    chain = LLMChain(llm=model, prompt=QA_CHAIN_PROMPT)
+    res = chain.run(context=context, question=question)
 
     try:
-        return res.json()["candidates"][0]["content"]["parts"][0]["text"]
+        return res
     except:
         return "Error generating response."

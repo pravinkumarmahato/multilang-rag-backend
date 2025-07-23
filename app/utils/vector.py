@@ -1,18 +1,17 @@
-import pdfplumber
-from sentence_transformers import SentenceTransformer
+from langchain.document_loaders import PyPDFLoader
 from app.db.mongo import save_document
 from app.utils.embedder import get_embedding
+import tempfile
 
 async def embed_and_store(file, username):
-    if file.filename.endswith(".pdf"):
-        with pdfplumber.open(file.file) as pdf:
-            content = "\n".join(page.extract_text() for page in pdf.pages if page.extract_text())
-    else:
-        content = await file.read()
-        content = content.decode("utf-8", errors="ignore")
+    # Write uploaded file to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        contents = await file.read()
+        tmp.write(contents)
+        tmp_path = tmp.name  # Get the temp file path
 
-    if not content.strip():
-        return "No text extracted."
-
-    embedding = get_embedding(content)
-    save_document(username, content, embedding)
+    pdf_loader = PyPDFLoader(tmp_path)
+    pages = pdf_loader.load_and_split()
+    context = "\n\n".join(str(p.page_content) for p in pages)
+    embedding = get_embedding(context)
+    save_document(username, context, embedding)
