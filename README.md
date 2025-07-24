@@ -298,13 +298,3 @@ GET /redoc # ReDoc
 docker build -t rag-backend .
 docker run -p 8000:8000 rag-backend
 ```
-
----
-
-Let me know if you want:
-
-- A Postman collection
-- A Mermaid.js diagram
-- PDF export of this document
-- Frontend integration guide
-
