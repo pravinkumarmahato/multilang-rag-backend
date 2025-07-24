@@ -241,28 +241,17 @@ Response:
 - `chats`: { username, query, answer }
 - `documents`: { username, content, embedding }
 
-### Diagram - Component Interaction
-
-```text
-           [ User Frontend ]
-                   │
-      ┌────────────┼────────────┐
-      ▼                            ▼
- [Auth Router]              [Upload Router] ─> embed_and_store
-      │                            │
- [Mongo: users]         [Mongo: documents]
-                                     │
-                          [Embedder → Gemini API]
-                                     │
-      ▼                            ▼
- [Chat Router] ─────→ [Get Docs → Gemini LLM] → Save Chat
-```
-
 ---
 
-### Diagram - System Architecture
+## Diagram 
 
+### System Architecture
 
+<img width="3617" height="3846" alt="Untitled diagram _ Mermaid Chart-2025-07-24-060116" src="https://github.com/user-attachments/assets/e2ab6f69-71f2-47f3-9f58-fcd8fdfd7083" />
+
+### Component Interaction
+
+<img width="1186" height="373" alt="Component Interface" src="https://github.com/user-attachments/assets/5ffda8a5-2d16-4b85-a4c3-d4b5867a17fa" />
 
 ---
 
